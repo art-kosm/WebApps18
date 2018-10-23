@@ -1,0 +1,93 @@
+<html>
+
+<head>
+<link href="/static/960.css" rel="stylesheet">
+<link href="/static/style.css" rel="stylesheet">
+<script type="text/javascript" src="/static/jquery-3.3.1.min.js"></script>
+
+<title>ПУНК</title>
+
+<script type="text/javascript" src="/static/script/jquery.maphilight.js"></script>
+<script type="text/javascript" src="/static/script/maphighlight.js"></script>
+<script type="text/javascript" src="/static/script/room_selection.js"></script>
+
+<style>
+	.cell {width:20px; height: 20px;}
+	.room_area {background-color: red;}
+	.room_selected {background-color: green;}
+</style>
+
+
+</head>
+
+<body>
+<div class="container_12" >
+	<span class="grid_1"><img src="/static/logo.png" width="80"/></span>
+	<h1 class="grid_7">
+		&nbsp;  $heading
+	</h1>
+	<h1 class="grid_2"><a href="/index">Главная</a></h1>
+	<h1 class="grid_2"><a href="/logout">Выйти</a></h1>
+	<hr class="grid_12"/>
+</div>
+
+<div class="container_16">
+	<span class="grid_8">
+		<div class="map"
+			 style="display: block;
+			 background-image: url(/static/png/map_ultra.png);
+			 background-size: contain;
+			 position: relative;
+			 padding: 0px;
+			 width: 306px;
+			 height: 642px;">
+			 <canvas style="width: 306px;
+			 				height: 642px;
+			 				position: absolute;
+			 				left: 0px;
+			 				top: 0px;
+			 				padding: 0px;
+			 				border: 0px;"
+			 				height="306"
+			 				width="642">
+			 </canvas>
+		 <img class="map"
+			 	  src="/static/png/map_ultra.png"
+			 	  width="306"
+			 	  height="642"
+			 	  usemap="#world"
+			 	  style="opacity: 1e-10;
+			 	  		 position: absolute;
+			 	  		 left: 0px;
+			 	  		 top: 0px;
+			 	  		 padding: 0px;
+			 	  		 border: 0px;">
+		</div>
+		<map name="world">
+		$areas
+	</span>
+	<span class="grid_8" id="active_room"></span>
+</map>
+</div>
+<div>
+	<TABLE>
+		#for $i in range(20)
+		<TR>
+			#for $j in range(20)
+				#set $id = $j + 20 * $i
+				#set $cl = 'cell'
+				#if $id in $rooms
+					#set $cl = $cl + ' room_area'
+				#end if
+				<TD id="$id" class="$cl">
+
+				</TD>
+			#end for
+		</TR>
+		#end for
+	</TABLE>
+</div>
+
+
+</body>
+</html>
