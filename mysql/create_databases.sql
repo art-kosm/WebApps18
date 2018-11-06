@@ -16,10 +16,7 @@ CREATE TABLE room_type ( id INT unsigned NOT NULL auto_increment,
 						 UNIQUE(name) );
 
 CREATE TABLE rooms ( id INT unsigned NOT NULL auto_increment,
+					 id_room INT unsigned NOT NULL,
 					 room_type INT NOT NULL,
-					 number_of_windows SMALLINT NOT NULL,
-					 x INT NOT NULL,
-					 y INT NOT NULL,
-					 CONSTRAINT pk_constraint PRIMARY KEY (id),
-					 CONSTRAINT unique_coords UNIQUE(x, y) )
+					 CONSTRAINT pk_constraint PRIMARY KEY (id) );
 

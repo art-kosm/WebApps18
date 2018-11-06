@@ -3,24 +3,33 @@
 <head>
 <link href="/static/960.css" rel="stylesheet">
 <link href="/static/style.css" rel="stylesheet">
-<script type="text/javascript" src="/static/jquery-3.3.1.min.js"></script>
+<link href="/static/jquery-ui.css" rel="stylesheet">
 
 <title>ПУНК</title>
 
-<script type="text/javascript" src="/static/script/jquery.maphilight.js"></script>
-<script type="text/javascript" src="/static/script/maphighlight.js"></script>
+<script type="text/javascript" src="/static/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="/static/script/room_selection.js"></script>
+<script type="text/javascript" src="/static/jquery-ui.js"></script>
 
 <style>
-	.cell {width:20px; height: 20px;}
-	.room_area {background-color: red;}
-	.room_selected {background-color: green;}
+    .highlight {
+        background-color: red !important;
+        color: red !important;
+        background-image: none !important;
+        background: red !important;
+    }
+    
+    .ui-datepicker td.ui-state-disabled>span{ background:#FF0000; }
+    .ui-datepicker td.ui-state-disabled { opacity:100; }
+    
+	.cell { width:25px; height: 25px; }
+	.room_area { background-color: gray; }
+	.room_selected { background-color: green; }
 </style>
 
-
 </head>
-
 <body>
+
 <div class="container_12" >
 	<span class="grid_1"><img src="/static/logo.png" width="80"/></span>
 	<h1 class="grid_7">
@@ -31,63 +40,32 @@
 	<hr class="grid_12"/>
 </div>
 
-<div class="container_16">
-	<span class="grid_8">
-		<div class="map"
-			 style="display: block;
-			 background-image: url(/static/png/map_ultra.png);
-			 background-size: contain;
-			 position: relative;
-			 padding: 0px;
-			 width: 306px;
-			 height: 642px;">
-			 <canvas style="width: 306px;
-			 				height: 642px;
-			 				position: absolute;
-			 				left: 0px;
-			 				top: 0px;
-			 				padding: 0px;
-			 				border: 0px;"
-			 				height="306"
-			 				width="642">
-			 </canvas>
-		 <img class="map"
-			 	  src="/static/png/map_ultra.png"
-			 	  width="306"
-			 	  height="642"
-			 	  usemap="#world"
-			 	  style="opacity: 1e-10;
-			 	  		 position: absolute;
-			 	  		 left: 0px;
-			 	  		 top: 0px;
-			 	  		 padding: 0px;
-			 	  		 border: 0px;">
-		</div>
-		<map name="world">
-		$areas
-	</span>
-	<span class="grid_8" id="active_room"></span>
-</map>
-</div>
-<div>
-	<TABLE>
-		#for $i in range(20)
-		<TR>
-			#for $j in range(20)
-				#set $id = $j + 20 * $i
-				#set $cl = 'cell'
-				#if $id in $rooms
-					#set $cl = $cl + ' room_area'
-				#end if
-				<TD id="$id" class="$cl">
+<div class="container12">
+  <div class="grid_12"> <h1 id="p1" style="font-size:20px;"> Выберите комнату </h1> </div>
+  <div class="clear"></div>
+  <div  class="grid_8" >
+    <form id = " formtest" action = " #" method = " post">
+        <TABLE align="left" width="500" height="auto">
+          <caption align="left"> <h1> Карта базы отдыха: <h1> </caption>
+            #for $i in range(20)
+            <TR>
+                #for $j in range(20)
+                    #set $id = $j + 20 * $i
+                    #set $cl = 'cell'
+                    #if $id in $rooms
+                        #set $cl = $cl + ' room_area'
+                    #end if
+                    <TD id="$id" class="$cl">   
 
-				</TD>
-			#end for
-		</TR>
-		#end for
-	</TABLE>
+                    </TD>
+                #end for
+            </TR>
+            #end for
+        </TABLE>
+    </form>
+  </div>
+  <div class="grid_4" id="calendar"></div>
 </div>
-
 
 </body>
 </html>

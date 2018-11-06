@@ -1,21 +1,39 @@
 $(document).ready(function() {
+    var eventDates = {};
+    
 	$(".room_area").click(function() {
 		$(".cell").removeClass("room_selected");
 		$(this).addClass("room_selected");
-		$.ajax({
-			type: "GET",
-			url: "/room?id=" + $(this).attr("id"),
-			success: function(data){
-				$("#active_room")
-					.empty()
-					.append('<div style="text-align: center"><span><font size="4" color="black">Вы выбрали комнату - '+data.number+'</font></span></div>')
-					.append('<div style="text-align: center"><span><font size="4" color="black">Тип комнаты - '+data.room_type_name+'</font></span></div>')
-					.append('<div style="text-align: center"><span><font size="4" color="black"> Стоимость проживание за один день - '+data.room_type_cost+'</font></span></div>')
-					.append('<div style="text-align: center"><h1><a href="#" id="deactivate_room">Отменить выбор</a></h1></div>')
-				$("#deactivate_room").click(function() {
-					$("#active_room").empty()
-				});
-			}
-		});
+        var id = $(this).attr("id");
+        var s = id.toString();
+        eventDates = {};
+        
+        $.post("/submit_dates",
+            {room_id: $(this).attr("id")},
+            function(data) {
+            $("#p1").html("Выбрана комната с номером " + s + ". Недоступные для выбора дни отмечены красным цветом.");
+            }, 
+            "json") 
+            .done(function(data) {
+                for (var i = 0; i < data.dates.length; i++) {
+                    eventDates[(new Date(data.dates[i])).setHours(0, 0, 0, 0)] = (new Date (data.dates[i])).setHours(0, 0, 0, 0);
+                }
+                $("#calendar").datepicker("refresh");
+            });
 	});
+    
+    $("#calendar").datepicker({
+        firstDay: 1,
+        minDate: 0,
+        maxDate: 365 * 2,
+        beforeShowDay: function(date) {
+            var highlight = eventDates[date.setHours(0, 0, 0, 0)];
+            if (highlight) {
+                return [false, "highlight", "unAvailable"];
+            }
+            else {
+                return [true, "", "Available"];
+            }   
+        }
+    });
 })

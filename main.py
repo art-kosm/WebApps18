@@ -6,7 +6,7 @@ import mysql.connector
 import settings
 import os, os.path
 import types
-import room_types
+import json
 
 from Cheetah.Template import Template
 from datetime import date
@@ -30,35 +30,6 @@ def login_page(message):
 
 def error_page(message="Ошибка сервера. Обратитесь к администратору."):
     return message
-
-
-def active_room_attributes(cnx, active_room):
-    if not active_room:
-        return None
-    active_room = int(active_room)
-    if type(active_room) != int:
-        raise Exception
-
-    cursor = cnx.cursor()
-
-    query = "SELECT id, name, cost FROM spa.room_type"
-    cursor.execute(query)
-    room_types = {i: (name, cost) for i, name, cost in cursor.fetchall()}
-
-    query = "SELECT room_type, number_of_windows FROM spa.rooms WHERE id = {};".format(active_room)
-    cursor.execute(query)
-    rows = cursor.fetchall()
-
-    if len(rows) != 1:
-        raise Exception
-
-    for room_type, number_of_windows in rows:
-        room = {}
-        room['number'] = str(active_room)
-        room['room_type_name'] = room_types[room_type][0]
-        room['room_type_cost'] = room_types[room_type][1]
-
-    return room
 
 
 class Root(object):
@@ -92,8 +63,8 @@ class Root(object):
             return login_page("init")
         else:
             try:
-                login_page = os.path.join('html', 'main.html')
-                f = codecs.open(login_page, encoding='utf-8')
+                login_page1 = os.path.join('html', 'main.html')
+                f = codecs.open(login_page1, encoding='utf-8')
                 temp = f.read()
                 rend = Template(temp)
                 rend.heading = u"База отдыха 'ПУНК'"
@@ -117,7 +88,7 @@ class Root(object):
         return active_room_attributes(cnx, id)
 
     @cherrypy.expose
-    def map(self, active_room=None):
+    def map(self):
         if 'sid' not in cherrypy.session:
             return login_page("init")
         try:
@@ -126,41 +97,42 @@ class Root(object):
                                           host=settings.host,
                                           database=settings.database)
             cursor = cnx.cursor()
-            query = "SELECT id, room_type, number_of_windows, x, y FROM spa.rooms"
+            query = "SELECT id_room, room_type FROM spa.rooms"
             cursor.execute(query)
             rows = cursor.fetchall()
-
-            if not rows:
-                return error_page("Ошибка, карта базы не обнаружена!")
-
-            areas = []
-            for identificator, room_type, number_of_windows, x, y in rows:
-                COEF = 6
-                x1 = x * room_types.COEF
-                y1 = y * room_types.COEF
-                x2, y2 = room_types.NEXT_CORNER[room_type](x, y)
-
-                areas.append('<area  class="room_area" shape="rect" id=' + str(identificator)
-                    + ' title="room '
-                    + str(identificator)
-                    + '" alt="room '
-                    + str(identificator)
-                    + '" coords="'
-                    + ','.join(map(str, [x1, y1, x2, y2]))
-                    + '">')
 
             f = codecs.open('html/map.html', encoding='utf-8')
             temp = f.read()
             rend = Template(temp)
             rend.heading = u"База отдыха 'ПУНК'"
-            rend.map = 'png/map.png'
-            rend.areas = '\n\t\t'.join(areas)
-            rend.rooms = {120, 230, 390}
-            # rend.active = active_room_attributes(cnx, active_room)
+            rend.rooms = [x[0] for x in rows]
             return unicode(rend)
         except Exception, e:
             cherrypy.log("Root. Template Render Failure!", traceback=True)
             return error_page(str(e))
+    
+    @cherrypy.expose
+    def submit_dates(self, room_id):
+        #cherrypy.response.headers['Content-Type'] = 'application/json'
+        id = int(room_id)
+        try:
+            cnx = mysql.connector.connect(user=settings.user,
+                                          password=settings.password,
+                                          host=settings.host,
+                                          database=settings.database)
+            cursor = cnx.cursor()
+            query = ("SELECT id_room, start_date, end_date FROM spa.booking WHERE id_room = %d" % id)
+            cursor.execute(query)
+            rows = cursor.fetchall()
+            format = "%Y-%m-%d"
+            dates = []
+            for x in rows:
+                dates += [date.fromordinal(i).strftime(format) for i in range(x[1].toordinal(), x[2].toordinal() + 1)]
+            message = { "dates" : dates }
+            return json.dumps(message)
+        except Exception, e:
+            cherrypy.log("Some MySQL error", traceback=True)
+            return json.dumps(dict(room_info="Error"))
 
 if __name__ == '__main__':
     cherrypy.config.update({'server.socket_host': server_host, 'server.socket_port': server_port,})

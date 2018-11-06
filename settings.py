@@ -1,7 +1,7 @@
 # coding=UTF-8
 
 user='root'
-password='master2018'
+password='1111'
 host='127.0.0.1'
 database='spa'
 server_host = '127.0.0.1'
