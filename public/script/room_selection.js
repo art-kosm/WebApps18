@@ -12,15 +12,19 @@ $(document).ready(function() {
             {room_id: $(this).attr("id")},
             function(data) {
             $("#p1").html("Выбрана комната с номером " + s + ". Недоступные для выбора дни отмечены красным цветом.");
-            }, 
-            "json") 
-            .done(function(data) {
-                for (var i = 0; i < data.dates.length; i++) {
+            for (var i = 0; i < data.dates.length; i++) {
                     eventDates[(new Date(data.dates[i])).setHours(0, 0, 0, 0)] = (new Date (data.dates[i])).setHours(0, 0, 0, 0);
                 }
                 $("#calendar").datepicker("refresh");
-            });
+            }, 
+            "json") 
 	});
+    
+    $('.room_area').contextmenu(function() {
+        $(".cell").removeClass("room_selected");
+        $("#p1").html("Выберите комнату. <br/> &nbsp; ");
+        return false;
+    });
     
     $("#calendar").datepicker({
         firstDay: 1,
