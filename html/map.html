@@ -18,13 +18,13 @@
         background-image: none !important;
         background: red !important;
     }
-	.selectedDay {
+    .selectedDay {
         background-color: green !important;
         color: green !important;
         background-image: none !important;
         background: green !important;
     }
-	.selectedStartDay {
+    .selectedStartDay {
         background-color: cyan !important;
         color: cyan !important;
         background-image: cyan !important;
@@ -34,29 +34,29 @@
     .ui-datepicker td.ui-state-disabled>span{ background:#FF0000; }
     .ui-datepicker td.ui-state-disabled { opacity:100; }
     
-	.cell { width:25px; height: 25px; }
-	.room_area { background-color: gray; }
-	.room_selected { background-color: green; }
+    .cell { width:25px; height: 25px; }
+    .room_area { background-color: gray; }
+    .room_selected { background-color: green; }
 </style>
 
 </head>
 <body>
 
 <div class="container_12" >
-	<span class="grid_1"><img src="/static/logo.png" width="80"/></span>
-	<h1 class="grid_7">
-		&nbsp;  $heading
-	</h1>
-	<h1 class="grid_2"><a href="/index">Главная</a></h1>
-	<h1 class="grid_2"><a href="/logout">Выйти</a></h1>
-	<hr class="grid_12"/>
+    <span class="grid_1"><img src="/static/logo.png" width="80"/></span>
+    <h1 class="grid_7">
+        &nbsp;  $heading
+    </h1>
+    <h1 class="grid_2"><a href="/index">Главная</a></h1>
+    <h1 class="grid_2"><a href="/logout">Выйти</a></h1>
+    <hr class="grid_12"/>
 </div>
 
 <div class="container_12">
-  <div class="grid_12"> <h1 id="p1" style="font-size:20px; text-align: justify;"> Выберите комнату. <br/> &nbsp;  </h1> </div>
-  <div class="clear"></div>
+    <div class="grid_12"> <h1 id="p1" style="font-size:20px; text-align: justify;"> Выберите комнату. <br/> &nbsp;  </h1> </div>
+    <div class="clear"></div>
     <form class="grid_7" id=" formtest" action = " #" method = " post">
-	<h1> Карта базы отдыха: <h1>
+        <h1> Карта базы отдыха: </h1>
         <TABLE align="left" height="auto">
             #for $i in range(20)
             <TR>
@@ -74,9 +74,17 @@
             #end for
         </TABLE>
     </form>
-	<div class="grid_5" id="calendar"></div>
-	<h1 id="p2" style="font-size:15px; text-align: left; color:#FF0000"> </h1>
-	<input value='Забронировать' type='button' id='submit-book' style="margin:15px"/>
+    <div class = "grid_5">
+        <div id="calendar"></div>
+        <div style="padding:10px">
+            Ф. И. О.:<br>
+            <input type="text" id="name"><br>
+            Контактный номер:<br>
+            <input type="text" id="phone-number">
+        </div>
+        <h1 id="p2" style="font-size:15px; text-align: left; color:#FF0000"> </h1>
+        <input value='Забронировать' type='button' id='submit-book' style="margin:15px"/>
+    </div>
 </div>
 
 </body>

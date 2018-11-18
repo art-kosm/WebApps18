@@ -135,11 +135,11 @@ class Root(object):
             return json.dumps(dict(room_info="Error"))
     
     @cherrypy.expose
-    def book_dates(self, room_id, start_date, end_date):
+    def book_dates(self, room_id, start_date, end_date, name, phone_number):
         try:
             id = int(room_id)
             format = "%d/%m/%Y"
-            values = (id, datetime.strptime(start_date, format).date(), datetime.strptime(end_date, format).date(), '', '')
+            values = (id, datetime.strptime(start_date, format).date(), datetime.strptime(end_date, format).date(), name, phone_number)
             cnx = mysql.connector.connect(user=settings.user,
                                           password=settings.password,
                                           host=settings.host,

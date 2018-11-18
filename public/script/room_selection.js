@@ -103,10 +103,36 @@ $(document).ready(function() {
 	};
 	
 	$("#submit-book").on("click", function() {
-		if (selectedRangeStart == null) {
-			$("#p2").html("Даты бронирования не выбраны.");
+		var errLine = "";
+
+		var nameValue = $("#name").val();
+		var phoneValue = $("#phone-number").val();
+
+		if (nameValue == "") {
+			errLine += "Ф. И. О. не указано. <br />";
 		}
 		else {
+			var nameRegExp = new RegExp("[А-ЯЁ][а-яё]+(-[А-ЯЁ][а-яё]+)?\\s[А-ЯЁ][а-яё]+\\s[А-ЯЁ][а-яё]+");
+			if (!nameRegExp.test(nameValue)) {
+				errLine += "Ф. И. О. некорректно. <br />";
+			}
+		}
+
+		if (phoneValue == "") {
+			errLine += "Контактный телефон не указан. <br />";
+		}
+		else {
+			var phoneRegExp = new RegExp('[+]?[0-9]{11}');
+			if (!phoneRegExp.test(phoneValue)) {
+				errLine += "Контактный телефон некорректен. <br />";
+			}
+		}
+
+		if (selectedRangeStart == null) {
+			errLine += "Даты бронирования не выбраны.";
+		}
+
+		if (errLine == "") {
 			if (selectedRangeEnd == null) {
 				selectedRangeEnd = selectedRangeStart;
 			}
@@ -121,7 +147,9 @@ $(document).ready(function() {
 			var insertion = $.post("/book_dates",
             {room_id: selectedRoom,
 			start_date: start.getDate().toString() + "/" + (start.getMonth() + 1).toString() + "/" + start.getFullYear().toString(),
-			end_date: end.getDate().toString() + "/" + (end.getMonth() + 1).toString() + "/" + end.getFullYear().toString()},
+			end_date: end.getDate().toString() + "/" + (end.getMonth() + 1).toString() + "/" + end.getFullYear().toString(),
+			name: nameValue,
+			phone_number: phoneValue},
             "json")
 			insertion.done( function() {
 				for (var i = min; i <= max; i += 86400000) {
@@ -132,6 +160,11 @@ $(document).ready(function() {
 				$("#calendar").datepicker("refresh");
 			}
 			);
+			$("#p2").html("Заказ успешно осуществлён.");
+		}
+		else {
+			$("#p2").html(errLine);
+			errLine = "";
 		}
 	});
 });
