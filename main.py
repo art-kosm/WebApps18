@@ -133,6 +133,25 @@ class Root(object):
         except Exception, e:
             cherrypy.log("Some MySQL error", traceback=True)
             return json.dumps(dict(room_info="Error"))
+    
+    @cherrypy.expose
+    def book_dates(self, room_id, start_date, end_date):
+        try:
+            id = int(room_id)
+            format = "%d/%m/%Y"
+            values = (id, datetime.strptime(start_date, format).date(), datetime.strptime(end_date, format).date(), '', '')
+            cnx = mysql.connector.connect(user=settings.user,
+                                          password=settings.password,
+                                          host=settings.host,
+                                          database=settings.database)
+            cursor = cnx.cursor()
+            insert = ("INSERT INTO spa.booking (id_room, start_date, end_date, FULL_NAME, PHONE_NUMBER) VALUES(%s, %s, %s, %s, %s)")
+            cursor.execute(insert, values)
+            cnx.commit()
+            return json.dumps(dict(room_info="Success"))
+        except Exception, e:
+            cherrypy.log("MySQL insert problem", traceback = True)
+            return error_page(str(e))
 
 if __name__ == '__main__':
     cherrypy.config.update({'server.socket_host': server_host, 'server.socket_port': server_port,})

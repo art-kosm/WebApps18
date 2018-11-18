@@ -1,5 +1,7 @@
 USE spa;
 
+DROP TABLE booking;
+
 CREATE TABLE booking ( id INT unsigned NOT NULL auto_increment,
 					   id_room INT unsigned NOT NULL,
 					   start_date DATE NOT NULL,

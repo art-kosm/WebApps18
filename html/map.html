@@ -18,6 +18,18 @@
         background-image: none !important;
         background: red !important;
     }
+	.selectedDay {
+        background-color: green !important;
+        color: green !important;
+        background-image: none !important;
+        background: green !important;
+    }
+	.selectedStartDay {
+        background-color: cyan !important;
+        color: cyan !important;
+        background-image: cyan !important;
+        background: cyan !important;
+    }
     
     .ui-datepicker td.ui-state-disabled>span{ background:#FF0000; }
     .ui-datepicker td.ui-state-disabled { opacity:100; }
@@ -44,8 +56,8 @@
   <div class="grid_12"> <h1 id="p1" style="font-size:20px; text-align: justify;"> Выберите комнату. <br/> &nbsp;  </h1> </div>
   <div class="clear"></div>
     <form class="grid_7" id=" formtest" action = " #" method = " post">
-        <TABLE align="left" width="500" height="auto">
-          <caption align="left"> <h1> Карта базы отдыха: <h1> </caption>
+	<h1> Карта базы отдыха: <h1>
+        <TABLE align="left" height="auto">
             #for $i in range(20)
             <TR>
                 #for $j in range(20)
@@ -62,7 +74,9 @@
             #end for
         </TABLE>
     </form>
-  <div class="grid_5" id="calendar"></div>
+	<div class="grid_5" id="calendar"></div>
+	<h1 id="p2" style="font-size:15px; text-align: left; color:#FF0000"> </h1>
+	<input value='Забронировать' type='button' id='submit-book' style="margin:15px"/>
 </div>
 
 </body>
