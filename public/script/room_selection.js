@@ -1,8 +1,12 @@
+var nameValue;
+var phoneValue;
+
 $(document).ready(function() {
     var eventDates = {};
 	var selectedRangeStart = null;
 	var selectedRangeEnd = null;
 	var selectedRoom;
+
     
 	$(".room_area").click(function() {
 		$(".cell").removeClass("room_selected");
@@ -19,7 +23,7 @@ $(document).ready(function() {
             function(data) {
             $("#p1").html("Выбрана комната с номером " + s + ". Недоступные для выбора дни отмечены красным цветом.");
             for (var i = 0; i < data.dates.length; i++) {
-                    eventDates[(new Date(data.dates[i])).setHours(0, 0, 0, 0)] = (new Date (data.dates[i])).setHours(0, 0, 0, 0);
+                    eventDates[(new Date(data.dates[i][0])).setHours(0, 0, 0, 0)] = [(new Date (data.dates[i][0])).setHours(0, 0, 0, 0), data.dates[i][1], data.dates[i][2]];
                 }
                 $("#calendar").datepicker("refresh");
             }, 
@@ -50,7 +54,7 @@ $(document).ready(function() {
 				max = selectedRangeStart;
 			}
             if (highlight) {
-                return [false, "highlight", "unAvailable"];
+                return [true, "highlight", "unAvailable"];
             }
 			else if (selectedRangeEnd != null && (d >= min && d <= max)) {
 				return [true, "selectedDay", "Available"];
@@ -80,6 +84,9 @@ $(document).ready(function() {
 			selectedRangeEnd = null;
 		}
 		else if (selectedRangeStart == null) {
+			if (eventDates[selectedDate]) {
+				$("#p2").html("Выбранная комната недоступна в выбранные вами дни. Пожалуйста, выберите другие даты. " + eventDates[selectedDate][1]);
+			}
 			selectedRangeStart = selectedDate;
 		}
 		else {
@@ -94,7 +101,7 @@ $(document).ready(function() {
 			for (var i = min; i <= max; i += 86400000) {
 				if (eventDates[i]) {
 					selectedRangeEnd = null;
-					$("#p2").html("Выбранная комната недоступна в выбранные вами дни. Пожалуйста, выберите другие даты.");
+					$("#p2").html("Выбранная комната недоступна в выбранные вами дни. Пожалуйста, выберите другие даты. " + eventDates[i][1]);
 					break;
 				}
 			}
@@ -105,8 +112,8 @@ $(document).ready(function() {
 	$("#submit-book").on("click", function() {
 		var errLine = "";
 
-		var nameValue = $("#name").val();
-		var phoneValue = $("#phone-number").val();
+		nameValue = $("#name").val();
+		phoneValue = $("#phone-number").val();
 
 		if (nameValue == "") {
 			errLine += "Ф. И. О. не указано. <br />";
@@ -153,7 +160,7 @@ $(document).ready(function() {
             "json")
 			insertion.done( function() {
 				for (var i = min; i <= max; i += 86400000) {
-					eventDates[i] = i;
+					eventDates[i] = [i, nameValue, phoneValue];
 				}
 				selectedRangeStart = null;
 				selectedRangeEnd = null;

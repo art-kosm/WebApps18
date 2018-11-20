@@ -121,13 +121,13 @@ class Root(object):
                                           host=settings.host,
                                           database=settings.database)
             cursor = cnx.cursor()
-            query = ("SELECT id_room, start_date, end_date FROM spa.booking WHERE id_room = %d" % id)
+            query = ("SELECT id_room, start_date, end_date, FULL_NAME, PHONE_NUMBER FROM spa.booking WHERE id_room = %d" % id)
             cursor.execute(query)
             rows = cursor.fetchall()
             format = "%Y-%m-%d"
             dates = []
             for x in rows:
-                dates += [date.fromordinal(i).strftime(format) for i in range(x[1].toordinal(), x[2].toordinal() + 1)]
+                dates += [[date.fromordinal(i).strftime(format), x[3], x[4]] for i in range(x[1].toordinal(), x[2].toordinal() + 1)]
             message = { "dates" : dates }
             return json.dumps(message)
         except Exception, e:
